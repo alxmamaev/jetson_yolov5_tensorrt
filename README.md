@@ -1,5 +1,5 @@
 # jetson_yolov5_tensorrt
-This repo provide you easy way to convert [yolov5 model by ultralitics to TensorRT](https://github.com/ultralytics/yolov5) and fast inference wrapper. 
+This repo provide you easy way to convert [yolov5 model by ultralitics](https://github.com/ultralytics/yolov5) to TensorRT and fast inference wrapper. 
 
 
 [TensorRT](https://developer.nvidia.com/tensorrt) - is a toolset, that contains model optimizer and high performance inference.
@@ -24,6 +24,8 @@ VIDEO
 
 
 ## How to convert yolov5 model
+Process of model convertation to TensorRT looks like: *Pytorch -> ONNX -> TensorRT*.
+<br>Ultralitics repo already provide tool for convertation yolo to ONNX, please follow [this recipe](https://github.com/ultralytics/yolov5/issues/251).
 
 
 ## Run simple examples
