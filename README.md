@@ -122,7 +122,7 @@ for image, bboxes in wrapper.detect_from_itterator(video): # Gets detection and 
 
 
 ## How to build own docker container
-Building possible only in nvidia runtime, to setting up nvidia runtime as default, edit `/etc/docker/daemon.json ` file.
+Building possible only in nvidia runtime, to setting up nvidia runtime as default, edit `/etc/docker/daemon.json`  file.
 ```json
 {
     "runtimes": {
