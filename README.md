@@ -32,13 +32,14 @@ VIDEO
 Process of model convertation to TensorRT looks like: *Pytorch -> ONNX -> TensorRT*.
 <br>Ultralitics repo already provide tool for convertation yolo to ONNX, please follow [this recipe](https://github.com/ultralytics/yolov5/issues/251).
 
-After that you need to use trtexec, my docker container includes builded trtexec. You can use it just by pulling container.
+After that you need to use `trtexec` tool, my docker container includes builded trtexec. You can use it just by pulling the container.
 JetPack already includes nvidia docker, you does need to install additional sofrware to run exampels.
 * Pool docker container: `docker pull ...` (if you not pull it yet)
 * Run `docker run --runtime nvidia -v /path/to/dir/with/model/:/models/ --rm yolov5_trt:latest trtexec --onnx=/models/model_name.onnx --saveEngine=model_name.plan -  -fp16`
   - Provide directory with your model after `-v` option, this dir will be shared between container and the host.
-  - also replace `model_name` by name of your model file
+  - Also replace `model_name` by name of your model file
   - TensorRT model will be saved at path that sets in `--saveEngine` option
+  - If you want to know more convertion options call trtexec with `--help` option
 
 ## Run simple examples
 * Pool docker container: `docker pull ...` (if you not pull it yet)
