@@ -1,0 +1,1 @@
+from .trt_wrapper import Yolov5TRTWrapper
