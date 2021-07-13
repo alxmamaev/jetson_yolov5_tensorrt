@@ -16,16 +16,16 @@ VIDEO
 
 ## Performance
 *The table provide number of frame per second for Jetson Nano 2GB.*
-| model / image_size|    256 |        320 |     640.    |
+| model / image_size|    256 |        320 |     640    |
 | ----------- | -----------|----------- | ----------- |
 | yolov5s + fp16  | -      | 25 fps      | 9 fps       |
 | yolov5m  + fp16   | -      | -      | -       |
 | yolov5l  + fp16   | -      | -      | -       |
-| yolov5z  + fp16   | -      | -      |   -          |
+| yolov5x  + fp16   | -      | -      |   -          |
 | yolov5s     | -      | -      | 7 fps       |
 | yolov5m     | -      | -      | -       |
 | yolov5l     | -      | -      | -       |
-| yolov5z     | -      | -      |   -          |
+| yolov5x     | -      | -      |   -          |
 
 
 ## How to convert yolov5 model
