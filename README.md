@@ -5,7 +5,7 @@ This repo provide you easy way to convert [yolov5 model by ultralitics](https://
 [TensorRT](https://developer.nvidia.com/tensorrt) - is a toolset, that contains model optimizer and high performance inference.
 
 # Demo
-![VIDEO](https://www.youtube.com/watch?v=Gg_El_NgPs8)
+[VIDEO](https://www.youtube.com/watch?v=Gg_El_NgPs8)
 
 
 ## Requirements 
