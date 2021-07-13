@@ -52,6 +52,74 @@ JetPack already includes nvidia docker, you does need to install additional sofr
 
 ## How to use wrapper in your projects
 
+### Getting detection from the camera
+```python
+
+import cv2
+from yolov5_trt import Yolov5TRTWrapper 
+
+labels = [...] # List of class names for your model
+conf_th = 0.25 # Confidence threshold
+
+wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th)
+for image, bboxes in wrapper.detect_from_webcam(0): # Gets detection and image from the usb camera with id 0
+    image = wrapper.draw_detections(image, bboxes) # Drawing bboxes on the image
+
+    # Show detections in the window with name "demo"
+    cv2.imshow("demo", image) 
+    if cv2.waitKey(1) == 27:
+        break
+```
+
+### Getting detection from the Video
+```python
+
+import cv2
+from yolov5_trt import Yolov5TRTWrapper 
+
+labels = [...] # List of class names for your model
+conf_th = 0.25 # Confidence threshold
+
+wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th)
+
+video = cv2.VideoCapture("video.mp4") # Opening video file
+
+for image, bboxes in wrapper.detect_from_video(video): # Gets detection and image from the video
+    image = wrapper.draw_detections(image, bboxes) # Drawing bboxes on the image
+
+    # Show detections in the window with name "demo"
+    cv2.imshow("demo", image) 
+    if cv2.waitKey(1) == 27:
+        break
+```
+
+### Getting detection from the Itterator (also generator, or list)
+```python
+
+import cv2
+from yolov5_trt import Yolov5TRTWrapper 
+
+labels = [...] # List of class names for your model
+conf_th = 0.25 # Confidence threshold
+
+wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th)
+
+images_paths = [...] # Path to images
+images = (cv2.imread(image_path) for image_path in images_paths)
+
+for image, bboxes in wrapper.detect_from_itterator(video): # Gets detection and image from the itterator
+    image = wrapper.draw_detections(image, bboxes) # Drawing bboxes on the image
+
+    # Show detections in the window with name "demo"
+    cv2.imshow("demo", image) 
+    cv2.waitKey()
+```
+
+### Getting detection from batch of images 
+*Note: in the streaming tasks you does not need to process batches with size more than 1. Because in streaming latency is more important than throughput.*
+<br>
+*Note2: Be careful, the size of the input batch must be less than or equal to the maximum batch size specified during conversion*
+
 
 ## How to build own docker container
 
