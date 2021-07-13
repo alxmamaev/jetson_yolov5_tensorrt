@@ -122,4 +122,16 @@ for image, bboxes in wrapper.detect_from_itterator(video): # Gets detection and 
 
 
 ## How to build own docker container
-
+Building possible only in nvidia runtime, to setting up nvidia runtime as default, edit `/etc/docker/daemon.json ` file.
+```json
+{
+    "runtimes": {
+        "nvidia": {
+            "path": "/usr/bin/nvidia-container-runtime",
+            "runtimeArgs": []
+         } 
+    },
+    "default-runtime": "nvidia"  # Add this option
+}
+```
+And restart docker by `sudo systemctl restart docker`. After that build docker container `docker build . -t yolo5_trt:latest`
