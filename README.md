@@ -120,6 +120,31 @@ for image, bboxes in wrapper.detect_from_itterator(video): # Gets detection and 
 <br>
 *Note2: Be careful, the size of the input batch must be less than or equal to the maximum batch size specified during conversion*
 
+```python
+
+import cv2
+from yolov5_trt import Yolov5TRTWrapper 
+
+labels = [...] # List of class names for your model
+conf_th = 0.25 # Confidence threshold
+
+wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th)
+
+images_paths = [...] # Path to images
+images_batch = [cv2.imread(image_path) for image_path in images_paths] # read images batch
+
+session = wrapper.create_session()
+with session:
+    bboxes = wrapper.detect_from_batch_images(images_batch, session): # Gets detection from images batch.
+    for b, img in zip(bboxes, images_batch)
+      image = wrapper.draw_detections(img, b) # Drawing bboxes on the image
+
+      # Show detections in the window with name "demo"
+      cv2.imshow("demo", image) 
+      cv2.waitKey()
+```
+
+Session creating takes a some time, for high performance, process all batch inside `with session` block (befor session closing). 
 
 ## How to build own docker container
 Building possible only in nvidia runtime, to setting up nvidia runtime as default, edit `/etc/docker/daemon.json`  file.
