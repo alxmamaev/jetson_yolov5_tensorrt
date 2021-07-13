@@ -131,7 +131,7 @@ Building possible only in nvidia runtime, to setting up nvidia runtime as defaul
             "runtimeArgs": []
          } 
     },
-    "default-runtime": "nvidia"  # Add this option
+    "default-runtime": "nvidia"
 }
 ```
 And restart docker by `sudo systemctl restart docker`. After that build docker container `docker build . -t yolo5_trt:latest`
