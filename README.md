@@ -46,9 +46,13 @@ JetPack already includes nvidia docker, you does need to install additional sofr
 * Pool docker container: `docker pull ...` (if you not pull it yet)
 * Allow docker use Xserver for drawing window with dertections: `xhost +`
 * Check what is your webcamera device index, by `find /dev -name video*` and find files like `/dev/video0` 
-* Run webcam demo: `docker run --rm --device=/dev/video0`
+* Run webcam demo: `docker run --rm --net=host --runtime nvidia  -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix --device=/dev/video0 -v /path/to/data:/data yolov5_trt:latest yolov5_detect.py /data/model_name.plan --source 0`
    - `--rm`  says remove container after exist
    - `--device` says what the device you want provide inside docker container, in this case `/dev/video0` means webcamera device
+   - `--rm will` delete the container when finished
+   - `--runtime` nvidia will use the NVIDIA container runtime 
+   - `/path/to/data` - is a path to directory with a model file 
+   - if you want to check model detection on the images or on the video use `--source=/path/to/video.mp4` or `--source=/path/to/image1.jpg,/path/to/image2.jpg`
 
 
 ## How to use wrapper in your projects
