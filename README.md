@@ -42,6 +42,8 @@ JetPack already includes nvidia docker, you does need to install additional sofr
   - TensorRT model will be saved at path that sets in `--saveEngine` option
   - If you want to know more convertion options call trtexec with `--help` option
 
+*__Note__: trtexec has `--int8` option, thats allows you to quantize model into 8-bit integer. Usually it's speedup inference ([Read More](https://on-demand.gputechconf.com/gtc/2017/presentation/s7310-8-bit-inference-with-tensorrt.pdf)). But nvidia Jetson Nano, does not support int8 inferece, inference will be slowdown with this option, but if you have nvidia xavier, you can check it, because [xavier supports int8](https://forums.developer.nvidia.com/t/why-jetson-nano-not-support-int8/84060).*
+
 ## Run simple examples
 * Pool docker container: `docker pull ...` (if you not pull it yet)
 * Allow docker use Xserver for drawing window with dertections: `xhost +`
@@ -121,9 +123,9 @@ for image, bboxes in wrapper.detect_from_itterator(video): # Gets detection and 
 ```
 
 ### Getting detection from batch of images 
-*Note: in the streaming tasks you does not need to process batches with size more than 1. Because in streaming latency is more important than throughput.*
-<br>
-*Note2: Be careful, the size of the input batch must be less than or equal to the maximum batch size specified during conversion*
+*__Note:__ in the streaming tasks you does not need to process batches with size more than 1. Because in streaming latency is more important than throughput.*
+<br><br>
+*__Note2:__ Be careful, the size of the input batch must be less than or equal to the maximum batch size specified during conversion*
 
 ```python
 
