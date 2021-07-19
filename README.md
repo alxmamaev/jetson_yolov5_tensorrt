@@ -35,7 +35,7 @@ Process of model convertation to TensorRT looks like: *Pytorch -> ONNX -> Tensor
 
 After that you need to use `trtexec` tool, my docker container includes builded trtexec. You can use it just by pulling the container.
 JetPack already includes nvidia docker, you does need to install additional sofrware to run exampels.
-* Pool docker container: `docker pull ...` (if you not pull it yet)
+* (Container is not yet published) Pool docker container: `docker pull ...`
 * Run `docker run --runtime nvidia -v /path/to/dir/with/model/:/models/ --rm yolov5_trt:latest trtexec --onnx=/models/model_name.onnx --saveEngine=model_name.plan -  -fp16`
   - Provide directory with your model after `-v` option, this dir will be shared between container and the host.
   - Also replace `model_name` by name of your model file
