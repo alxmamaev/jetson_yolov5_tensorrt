@@ -1,3 +1,8 @@
 *.jpg
 *.mp4
 *.plan
+*.txt
+data/
+*.jpg
+*.git
+

@@ -35,8 +35,8 @@ Process of model convertation to TensorRT looks like: *Pytorch -> ONNX -> Tensor
 
 After that you need to use `trtexec` tool, my docker container includes builded trtexec. You can use it just by pulling the container.
 JetPack already includes nvidia docker, you does need to install additional sofrware to run exampels.
-* (Container is not yet published) Pool docker container: `docker pull ...`
-* Run `docker run --runtime nvidia -v /path/to/dir/with/model/:/models/ --rm yolov5_trt:latest trtexec --onnx=/models/model_name.onnx --saveEngine=/models/model_name.plan -  -fp16`
+* Pool docker container or build (See build section): `docker pull alxmamaev/jetson_yolov5_trt:latest`
+* Run `docker run --runtime nvidia -v /path/to/dir/with/model/:/models/ --rm alxmamaev/jetson_yolov5_trt:latest trtexec --onnx=/models/model_name.onnx --saveEngine=/models/model_name.plan -  -fp16`
   - Provide directory with your model after `-v` option, this dir will be shared between container and the host.
   - Also replace `model_name` by name of your model file
   - TensorRT model will be saved at path that sets in `--saveEngine` option
@@ -48,7 +48,7 @@ JetPack already includes nvidia docker, you does need to install additional sofr
 * (Container is not yet published) Pool docker container or build it (See build section): `docker pull ...` (if you not pull it yet)
 * Allow docker use Xserver for drawing window with dertections: `xhost +`
 * Check what is your webcamera device index, by `find /dev -name video\*` and find files like `/dev/video0` 
-* Run webcam demo: `docker run --rm --net=host --runtime nvidia  -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix --device=/dev/video0 -v /path/to/data:/data yolov5_trt:latest yolov5_detect.py /data/model_name.plan --source 0`
+* Run webcam demo: `docker run --rm --net=host --runtime nvidia  -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix --device=/dev/video0 -v /path/to/data:/data alxmamaev/jetson_yolov5_trt:latest yolov5_detect.py /data/model_name.plan --source 0`
    - `--rm`  says remove container after exist
    - `--device` says what the device you want provide inside docker container, in this case `/dev/video0` means webcamera device
    - `--rm will` delete the container when finished
