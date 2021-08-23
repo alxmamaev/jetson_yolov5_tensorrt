@@ -6,13 +6,16 @@ from argparse import ArgumentParser
 
 def parse():
     parser = ArgumentParser()
-    parser.add_argument("engine_path")
-    parser.add_argument("--labels_file")
-    parser.add_argument("--source", default="0")
-    parser.add_argument("--conf_th", default=0.45, type=float)
+    parser.add_argument("engine_path", help="Path to serialized TensorRT model in .plan format")
+    parser.add_argument("--labels_file", help="Path to txt file with class names, where every class separated by new line")
+    parser.add_argument("--source", default="0", help="Source type: 0 - webcam with id=0; path to video file; path to photos separated by \";\"")
+    parser.add_argument("--conf_th", default=0.45, type=float, help="Detection confidence threshold")
+    parser.add_argument("--iou_th", default=0.45, type=float, help="Detection IoU threshold")
+    parser.add_argument("--multilabel", default=False, action="store_true", help="Use multilabel mode, when each bbox may have multiple classes")
+    parser.add_argument("--agnostic", default=False, action="store_true", help="Agnostic mode. when NMS will merge bboxes with different classes")
+    parser.add_argument("--max_det", default=300, type=int, help="Number of maximum detections count")
 
     return parser.parse_args()
-
 
 
 def webcam_example(wrapper, device_id):
@@ -57,12 +60,14 @@ def read_labels(labels_file):
     labels = []
     with open(labels_file) as f:
         for line in f:
-            line = labels.strip()
+            line = line.strip()
 
             if not line:
                 break
 
             labels.append(line)
+    
+    return labels
 
 
 def main(args):
@@ -71,7 +76,13 @@ def main(args):
     else:
         labels = None 
 
-    wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=args.conf_th)
+    wrapper = Yolov5TRTWrapper(args.engine_path,
+                               labels=labels, 
+                               conf_thresh=args.conf_th,
+                               iou_thresh=args.iou_th,
+                               multilabel=args.multilabel,
+                               agnostic=args.agnostic,
+                               max_det=args.max_det)
 
     if args.source.isdigit():
         device_id = int(args.source)

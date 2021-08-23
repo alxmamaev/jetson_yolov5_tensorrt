@@ -94,9 +94,15 @@ class Yolov5TRTSession:
 
 
 class Yolov5TRTWrapper:
-    def __init__(self, engine_path, conf_thresh=0.25, labels=None):
+    def __init__(self, engine_path, conf_thresh=0.25, iou_thresh=0.45, multilabel=False, agnostic=False, labels=None, max_det=300):
         self.conf_thresh = conf_thresh
         self.labels = labels
+        self.iou_thresh = iou_thresh
+        self.multilabel = multilabel
+        self.agnostic = agnostic
+        self.max_det = max_det
+
+
         with open(engine_path, "rb") as f:
             self.serialized_model = f.read()
 
@@ -165,7 +171,12 @@ class Yolov5TRTWrapper:
         
         self.images2memory(batch_images, memory)
         out = session.execute()[-1][:batch_size]
-        bboxes = non_max_supression(out, conf_thresh=self.conf_thresh)
+        bboxes = non_max_supression(out, 
+                                    conf_thresh=self.conf_thresh, 
+                                    iou_thresh=self.iou_thresh, 
+                                    multilabel=self.multilabel,
+                                    agnostic=self.agnostic,
+                                    max_det=self.max_det)
 
         for i, s in enumerate(scale_factors):
             bboxes[i][:,:4] *= s

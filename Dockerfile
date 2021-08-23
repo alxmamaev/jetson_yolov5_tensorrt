@@ -29,3 +29,4 @@ ENV LD_PRELOAD /usr/lib/aarch64-linux-gnu/libgomp.so.1
 
 COPY . /workdir
 RUN python3 setup.py install
+WORKDIR /workdir

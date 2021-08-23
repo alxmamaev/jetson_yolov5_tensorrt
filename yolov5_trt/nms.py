@@ -1,3 +1,6 @@
+# This nms is modified version of https://github.com/ultralytics/yolov5/blob/master/utils/general.py
+# all torch dependeces is removed,only numpy is using for calculcations
+
 import numpy as np
 
 
@@ -61,53 +64,63 @@ def _fast_nms(boxes, scores, iou_th):
 
 
 # Like original NMS but working on NumPy
-def non_max_supression(predictions, conf_thresh=0.25, iou_thresh=0.45, multilabel=False):
-    nc = predictions.shape[2] - 5
-    xc = predictions[...,4] > conf_thresh
+def non_max_supression(predictions, conf_thresh=0.25, iou_thresh=0.45, multilabel=False, agnostic=False, max_det=300):
+    nc = predictions.shape[2] - 5  # number of classes
+    xc = predictions[...,4] > conf_thresh # candidates  
 
     assert 0 <= conf_thresh <= 1, f'Invalid Confidence threshold {conf_thres}, valid values are between 0.0 and 1.0'
     assert 0 <= iou_thresh <= 1, f'Invalid IoU {iou_thres}, valid values are between 0.0 and 1.0'
 
-    min_wh, max_wh = 2, 4096
-    max_nms = 30000
+    min_wh, max_wh = 2, 4096 # (pixels) minimum and maximum box width and height
+    max_nms = 30000  # maximum number of boxes into torchvision.ops.nms() 
 
-    reduant = True
-    multilabel &= nc > 1
+    multilabel &= nc > 1 # multiple labels per box (adds 0.5ms/img)
 
 
     output = [np.zeros((0, 6), dtype=predictions.dtype) for i in range(predictions.shape[0])]
     for xi, x in enumerate(predictions):
         x = x[xc[xi]]
 
+        # If none remain process next image 
         if not x.shape[0]:
             continue
 
-        #compute conf: object conf * class conf
+        # Compute conf: object conf * class conf
         x[:, 5:] *= x[:, 4:5]
-        
+       
+
+        # Box (center x, center y, width, height) to (x1, y1, x2, y2)
         box = xywh2xyxy(x[:, :4])
         
 
+        # Detections matrix nx6 (xyxy, conf, cls)
         if multilabel:
-            raise NonImpementationError()
-        else:
+            i, j = (x[:, 5:] > conf_thres).nonzero(as_tuple=False).T
+            x = np.concatenate((box[i], x[i, j + 5, None], j[:, None].float()), 1)
+        else: # best class only
             conf = x[:, 5:].max(1, keepdims=True)
             j = x[:, 5:].argmax(1).astype(x.dtype)
             j = np.expand_dims(j, 1)
             
             x = np.concatenate((box, conf, j), 1)
 
-        n = x.shape[0]
+        n = x.shape[0] # number of boxes 
         if not n:
             continue
-        elif n > max_nms:
-            x = x[x[:, 4].argsort()][:max_nms]
+        elif n > max_nms: # excess boxes 
+            x = x[x[:, 4].argsort()][:max_nms] # sort by confidence
 
         
-        bboxes = x[:, :4].copy() + x[:, 5:6].copy() * max_wh
+        bboxes = x[:, :4].copy() + x[:, 5:6].copy() * (0 if agnostic else max_wh)
         scores = x[:, 4]
 
         indexes = _fast_nms(bboxes, scores, iou_thresh)
-        output[xi] = x[indexes]
+        x = x[indexes]
+        
+        if x.shape[0] > max_det:
+            x = x[x[:, 4].argsort()][:max_det]
+
+        output[xi] = x
+
 
     return output
