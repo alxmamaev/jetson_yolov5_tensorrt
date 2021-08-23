@@ -23,7 +23,7 @@ This repo provide you easy way to convert [yolov5 model by ultralitics](https://
 | yolov5m  + fp16   | -      | -      | -       |
 | yolov5l  + fp16   | -      | -      | -       |
 | yolov5x  + fp16   | -      | -      |   -          |
-| yolov5s     | -      | -      | 7 fps       |
+| yolov5s     | -      | 20      | 7 fps       |
 | yolov5m     | -      | -      | -       |
 | yolov5l     | -      | -      | -       |
 | yolov5x     | -      | -      |   -          |
@@ -36,7 +36,7 @@ Process of model convertation to TensorRT looks like: *Pytorch -> ONNX -> Tensor
 After that you need to use `trtexec` tool, my docker container includes builded trtexec. You can use it just by pulling the container.
 JetPack already includes nvidia docker, you does need to install additional sofrware to run exampels.
 * (Container is not yet published) Pool docker container: `docker pull ...`
-* Run `docker run --runtime nvidia -v /path/to/dir/with/model/:/models/ --rm yolov5_trt:latest trtexec --onnx=/models/model_name.onnx --saveEngine=model_name.plan -  -fp16`
+* Run `docker run --runtime nvidia -v /path/to/dir/with/model/:/models/ --rm yolov5_trt:latest trtexec --onnx=/models/model_name.onnx --saveEngine=/models/model_name.plan -  -fp16`
   - Provide directory with your model after `-v` option, this dir will be shared between container and the host.
   - Also replace `model_name` by name of your model file
   - TensorRT model will be saved at path that sets in `--saveEngine` option
@@ -45,9 +45,9 @@ JetPack already includes nvidia docker, you does need to install additional sofr
 *__Note__: trtexec has `--int8` option, thats allows you to quantize model into 8-bit integer. Usually it's speedup inference ([Read More](https://on-demand.gputechconf.com/gtc/2017/presentation/s7310-8-bit-inference-with-tensorrt.pdf)). But nvidia Jetson Nano, does not support int8 inferece, inference will be slowdown with this option, but if you have nvidia xavier, you can check it, because [xavier supports int8](https://forums.developer.nvidia.com/t/why-jetson-nano-not-support-int8/84060).*
 
 ## Run simple examples
-* (Container is not yet published) Pool docker container: `docker pull ...` (if you not pull it yet)
+* (Container is not yet published) Pool docker container or build it (See build section): `docker pull ...` (if you not pull it yet)
 * Allow docker use Xserver for drawing window with dertections: `xhost +`
-* Check what is your webcamera device index, by `find /dev -name video*` and find files like `/dev/video0` 
+* Check what is your webcamera device index, by `find /dev -name video\*` and find files like `/dev/video0` 
 * Run webcam demo: `docker run --rm --net=host --runtime nvidia  -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix --device=/dev/video0 -v /path/to/data:/data yolov5_trt:latest yolov5_detect.py /data/model_name.plan --source 0`
    - `--rm`  says remove container after exist
    - `--device` says what the device you want provide inside docker container, in this case `/dev/video0` means webcamera device
@@ -55,7 +55,7 @@ JetPack already includes nvidia docker, you does need to install additional sofr
    - `--runtime` nvidia will use the NVIDIA container runtime 
    - `/path/to/data` - is a path to directory with a model file 
    - if you want to check model detection on the images or on the video use `--source=/path/to/video.mp4` or `--source=/path/to/image1.jpg,/path/to/image2.jpg`
-
+* Run `yolov5_detect.py --help` to get more options
 
 ## How to use wrapper in your projects
 
@@ -68,7 +68,7 @@ from yolov5_trt import Yolov5TRTWrapper
 labels = [...] # List of class names for your model
 conf_th = 0.25 # Confidence threshold
 
-wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th)
+wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th) # See additional options in trt/examples/yolov5_detect.py
 for image, bboxes in wrapper.detect_from_webcam(0): # Gets detection and image from the usb camera with id 0
     image = wrapper.draw_detections(image, bboxes) # Drawing bboxes on the image
 
@@ -87,7 +87,7 @@ from yolov5_trt import Yolov5TRTWrapper
 labels = [...] # List of class names for your model
 conf_th = 0.25 # Confidence threshold
 
-wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th)
+wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th) # See additional options in trt/examples/yolov5_detect.py
 
 video = cv2.VideoCapture("video.mp4") # Opening video file
 
@@ -109,7 +109,7 @@ from yolov5_trt import Yolov5TRTWrapper
 labels = [...] # List of class names for your model
 conf_th = 0.25 # Confidence threshold
 
-wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th)
+wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th) # See additional options in trt/examples/yolov5_detect.py
 
 images_paths = [...] # Path to images
 images = (cv2.imread(image_path) for image_path in images_paths)
@@ -135,7 +135,7 @@ from yolov5_trt import Yolov5TRTWrapper
 labels = [...] # List of class names for your model
 conf_th = 0.25 # Confidence threshold
 
-wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th)
+wrapper = Yolov5TRTWrapper(args.engine_path, labels=labels, conf_thresh=conf_th) # See additional options in trt/examples/yolov5_detect.py
 
 images_paths = [...] # Path to images
 images_batch = [cv2.imread(image_path) for image_path in images_paths] # read images batch
