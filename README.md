@@ -23,7 +23,7 @@ This repo provide you easy way to convert [yolov5 model by ultralitics](https://
 | yolov5m  + fp16   | -      | -      | -       |
 | yolov5l  + fp16   | -      | -      | -       |
 | yolov5x  + fp16   | -      | -      |   -          |
-| yolov5s     | -      | 20      | 7 fps       |
+| yolov5s     | -      | 20 fps   | 7 fps       |
 | yolov5m     | -      | -      | -       |
 | yolov5l     | -      | -      | -       |
 | yolov5x     | -      | -      |   -          |
