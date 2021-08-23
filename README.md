@@ -1,6 +1,7 @@
 # jetson_yolov5_tensorrt
 This repo provide you easy way to convert [yolov5 model by ultralitics](https://github.com/ultralytics/yolov5) to TensorRT and fast inference wrapper. 
 
+_Code has minimal depenencies - PyCuda and TensorRT for model inference and Numpy for NMS (No PyTorch code!)._
 
 [TensorRT](https://developer.nvidia.com/tensorrt) - is a toolset, that contains model optimizer and high performance inference.
 
