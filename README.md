@@ -1,7 +1,7 @@
 # jetson_yolov5_tensorrt
-(WORK IN PROGESS)
 This repo provide you easy way to convert [yolov5 model by ultralitics](https://github.com/ultralytics/yolov5) to TensorRT and fast inference wrapper. 
 
+_Code has minimal depenencies - PyCuda and TensorRT for model inference and Numpy for NMS (No PyTorch code!)._
 
 [TensorRT](https://developer.nvidia.com/tensorrt) - is a toolset, that contains model optimizer and high performance inference.
 
@@ -23,7 +23,7 @@ This repo provide you easy way to convert [yolov5 model by ultralitics](https://
 | yolov5m  + fp16   | -      | -      | -       |
 | yolov5l  + fp16   | -      | -      | -       |
 | yolov5x  + fp16   | -      | -      |   -          |
-| yolov5s     | -      | 20      | 7 fps       |
+| yolov5s     | -      | 20 fps   | 7 fps       |
 | yolov5m     | -      | -      | -       |
 | yolov5l     | -      | -      | -       |
 | yolov5x     | -      | -      |   -          |
@@ -45,7 +45,7 @@ JetPack already includes nvidia docker, you does need to install additional sofr
 *__Note__: trtexec has `--int8` option, thats allows you to quantize model into 8-bit integer. Usually it's speedup inference ([Read More](https://on-demand.gputechconf.com/gtc/2017/presentation/s7310-8-bit-inference-with-tensorrt.pdf)). But nvidia Jetson Nano, does not support int8 inferece, inference will be slowdown with this option, but if you have nvidia xavier, you can check it, because [xavier supports int8](https://forums.developer.nvidia.com/t/why-jetson-nano-not-support-int8/84060).*
 
 ## Run simple examples
-* (Container is not yet published) Pool docker container or build it (See build section): `docker pull ...` (if you not pull it yet)
+* (Container is not yet published) Pool docker container or build it (See build section):  `docker pull alxmamaev/jetson_yolov5_trt:latest` (if you not pull it yet)
 * Allow docker use Xserver for drawing window with dertections: `xhost +`
 * Check what is your webcamera device index, by `find /dev -name video\*` and find files like `/dev/video0` 
 * Run webcam demo: `docker run --rm --net=host --runtime nvidia  -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix --device=/dev/video0 -v /path/to/data:/data alxmamaev/jetson_yolov5_trt:latest yolov5_detect.py /data/model_name.plan --source 0`
