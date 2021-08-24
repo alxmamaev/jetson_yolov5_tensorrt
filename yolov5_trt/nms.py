@@ -95,8 +95,8 @@ def non_max_supression(predictions, conf_thresh=0.25, iou_thresh=0.45, multilabe
 
         # Detections matrix nx6 (xyxy, conf, cls)
         if multilabel:
-            i, j = (x[:, 5:] > conf_thres).nonzero(as_tuple=False).T
-            x = np.concatenate((box[i], x[i, j + 5, None], j[:, None].float()), 1)
+            i, j = (x[:, 5:] > conf_thresh).nonzero()
+            x = np.concatenate((box[i], x[i, j + 5, None], j[:, None].astype(x.dtype)), 1)
         else: # best class only
             conf = x[:, 5:].max(1, keepdims=True)
             j = x[:, 5:].argmax(1).astype(x.dtype)
@@ -105,10 +105,11 @@ def non_max_supression(predictions, conf_thresh=0.25, iou_thresh=0.45, multilabe
             x = np.concatenate((box, conf, j), 1)
 
         n = x.shape[0] # number of boxes 
+
         if not n:
             continue
         elif n > max_nms: # excess boxes 
-            x = x[x[:, 4].argsort()][:max_nms] # sort by confidence
+            x = x[x[:, 4].argsort()[:max_det:-1]] # sort by confidence
 
         
         bboxes = x[:, :4].copy() + x[:, 5:6].copy() * (0 if agnostic else max_wh)
@@ -118,7 +119,7 @@ def non_max_supression(predictions, conf_thresh=0.25, iou_thresh=0.45, multilabe
         x = x[indexes]
         
         if x.shape[0] > max_det:
-            x = x[x[:, 4].argsort()][:max_det]
+            x = x[x[:, 4].argsort()[:max_det:-1]]
 
         output[xi] = x
 
